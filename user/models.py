@@ -7,7 +7,9 @@ from typing import Any, Optional
 class UserManager(BaseUserManager["User"]):
     use_in_migrations: bool = True
 
-    def _create_and_save_user(self, email: str, password: str | None, **extra_fields: Any) -> "User":
+    def _create_and_save_user(
+        self, email: str, password: str | None, **extra_fields: Any
+    ) -> "User":
         if not email:
             raise ValueError(_("The given email must be set"))
         email = self.normalize_email(email).lower()
@@ -18,7 +20,9 @@ class UserManager(BaseUserManager["User"]):
 
         return user
 
-    def create_user(self, email: str, password: str | None = None, **extra_fields: Any) -> "User":
+    def create_user(
+        self, email: str, password: str | None = None, **extra_fields: Any
+    ) -> "User":
         """Create and save a regular User with the given email and password."""
 
         extra_fields.setdefault("is_staff", False)
@@ -26,7 +30,9 @@ class UserManager(BaseUserManager["User"]):
 
         return self._create_and_save_user(email, password, **extra_fields)
 
-    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> "User":
+    def create_superuser(
+        self, email: str, password: str, **extra_fields: Any
+    ) -> "User":
         """Create and save a SuperUser with the given email and password."""
 
         extra_fields.setdefault("is_staff", True)
