@@ -249,4 +249,4 @@ class ReservationViewSet(
         return super().get_serializer_class()
 
     def perform_create(self, serializer: Any) -> None:
-        serializer.save(user=self.request.user)
+        serializer.save()

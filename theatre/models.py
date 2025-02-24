@@ -138,6 +138,9 @@ class Ticket(models.Model):
             )
 
     def clean(self) -> None:
+        if not self.performance:
+            raise ValidationError("Performance must be set before validating seats.")
+
         theatre_hall = self.performance.theatre_hall
         self.validate_seat_in_range(self.row, theatre_hall.rows, "row")
         self.validate_seat_in_range(self.seat, theatre_hall.seats_in_row, "seat")

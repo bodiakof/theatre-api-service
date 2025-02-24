@@ -9,12 +9,11 @@ from theatre.models import (
     Ticket,
     Actor,
     Genre,
-    Play
+    Play,
 )
 
 
 class TheatreHallSerializer(serializers.ModelSerializer):
-
     capacity = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -29,7 +28,6 @@ class PerformanceSerializer(serializers.ModelSerializer):
 
 
 class PerformanceListSerializer(serializers.ModelSerializer):
-
     play_title = serializers.CharField(source="play.title", read_only=True)
     play_image = serializers.ImageField(source="play.image", read_only=True)
     theatre_hall_name = serializers.CharField(
@@ -62,12 +60,9 @@ class TicketSeatsSerializer(serializers.ModelSerializer):
 
 
 class PerformanceDetailSerializer(serializers.ModelSerializer):
-
     play = serializers.StringRelatedField(read_only=True)
     theatre_hall = TheatreHallSerializer(read_only=True)
-    taken_places = TicketSeatsSerializer(
-        source="tickets", many=True, read_only=True
-    )
+    taken_places = TicketSeatsSerializer(source="tickets", many=True, read_only=True)
 
     class Meta:
         model = Performance
@@ -75,7 +70,6 @@ class PerformanceDetailSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-
     def validate(self, validated_data: dict) -> dict:
         ticket = Ticket(**validated_data)
         ticket.clean()
@@ -87,7 +81,6 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class TicketListSerializer(TicketSerializer):
-
     performance = PerformanceListSerializer(read_only=True)
 
     class Meta(TicketSerializer.Meta):
@@ -95,25 +88,65 @@ class TicketListSerializer(TicketSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-
-    tickets = TicketSeatsSerializer(many=True, source="tickets")
+    tickets = TicketSeatsSerializer(many=True)
 
     class Meta:
         model = Reservation
-        fields = ("id", "created", "tickets")
+        fields = ("id", "user", "created", "tickets")
+
+    def validate_tickets(self, value: list[dict]) -> list[dict]:
+        if not value:
+            raise serializers.ValidationError(
+                "Reservation must include at least one ticket."
+            )
+        return value
 
     def create(self, validated_data: dict) -> Reservation:
-        tickets_data = validated_data.pop("tickets")
+        tickets_data = validated_data.pop("tickets", [])
+        user = self.context["request"].user
+        validated_data.pop("user", None)
+
         with transaction.atomic():
-            reservation = Reservation.objects.create(**validated_data)
-            Ticket.objects.bulk_create(
-                [Ticket(reservation=reservation, **ticket) for ticket in tickets_data]
-            )
+            reservation = Reservation.objects.create(user=user, **validated_data)
+
+            seen_combinations = set()
+            unique_tickets = []
+
+            for ticket in tickets_data:
+                if "performance" in ticket:
+                    ticket["performance_id"] = ticket.pop("performance")
+                elif "performance_id" not in ticket:
+                    ticket["performance_id"] = self.get_default_performance_id()
+
+                ticket_combination = (
+                    ticket["performance_id"],
+                    ticket["row"],
+                    ticket["seat"],
+                )
+
+                if ticket_combination not in seen_combinations:
+                    if not Ticket.objects.filter(
+                        performance_id=ticket["performance_id"],
+                        row=ticket["row"],
+                        seat=ticket["seat"],
+                    ).exists():
+                        unique_tickets.append(Ticket(reservation=reservation, **ticket))
+                        seen_combinations.add(ticket_combination)
+
+            if not unique_tickets:
+                raise serializers.ValidationError(
+                    "All requested tickets are already taken."
+                )
+
+            Ticket.objects.bulk_create(unique_tickets)
+
         return reservation
+
+    def get_default_performance_id(self) -> int:
+        return 1
 
 
 class ReservationListSerializer(ReservationSerializer):
-
     tickets = serializers.SerializerMethodField()
 
     class Meta(ReservationSerializer.Meta):
@@ -124,7 +157,6 @@ class ReservationListSerializer(ReservationSerializer):
 
 
 class ActorSerializer(serializers.ModelSerializer):
-
     full_name = serializers.CharField(read_only=True)
 
     class Meta:
@@ -139,7 +171,6 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class PlaySerializer(serializers.ModelSerializer):
-
     genres = GenreSerializer(many=True, read_only=True)
     actors = ActorSerializer(many=True, read_only=True)
 
@@ -149,10 +180,7 @@ class PlaySerializer(serializers.ModelSerializer):
 
 
 class PlayListSerializer(serializers.ModelSerializer):
-
-    genres = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="name"
-    )
+    genres = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     actors = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="full_name"
     )
@@ -163,7 +191,6 @@ class PlayListSerializer(serializers.ModelSerializer):
 
 
 class PlayDetailSerializer(serializers.ModelSerializer):
-
     genres = GenreSerializer(many=True, read_only=True)
     actors = ActorSerializer(many=True, read_only=True)
 
@@ -173,7 +200,6 @@ class PlayDetailSerializer(serializers.ModelSerializer):
 
 
 class PlayImageSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Play
         fields = ("id", "image")
