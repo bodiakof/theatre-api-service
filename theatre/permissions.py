@@ -11,9 +11,6 @@ class IsAdminOrIfAuthenticatedReadOnly(BasePermission):
 
     def has_permission(self, request: Request, view: View) -> bool:
         """Check if the user has permission to access the resource."""
-        user = request.user
-        return bool(
-            user
-            and user.is_authenticated
-            and (request.method in SAFE_METHODS or user.is_staff)
+        return request.user.is_authenticated and (
+            request.method in SAFE_METHODS or request.user.is_staff
         )
