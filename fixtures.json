@@ -1,0 +1,272 @@
+[
+  {
+    "model": "theatre.genre",
+    "pk": 1,
+    "fields": { "name": "Romance" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 2,
+    "fields": { "name": "Fantasy" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 3,
+    "fields": { "name": "Mystery" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 4,
+    "fields": { "name": "Adventure" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 5,
+    "fields": { "name": "Crime" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 6,
+    "fields": { "name": "Historical" }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 1,
+    "fields": {
+      "first_name": "Daniel",
+      "last_name": "Craig"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 2,
+    "fields": {
+      "first_name": "Emma",
+      "last_name": "Watson"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 3,
+    "fields": {
+      "first_name": "Joaquin",
+      "last_name": "Phoenix"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 4,
+    "fields": {
+      "first_name": "Anne",
+      "last_name": "Hathaway"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 5,
+    "fields": {
+      "first_name": "Tom",
+      "last_name": "Hardy"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 6,
+    "fields": {
+      "first_name": "Zendaya",
+      "last_name": "Coleman"
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 1,
+    "fields": {
+      "name": "Grand Stage",
+      "rows": 25,
+      "seats_in_row": 35
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 2,
+    "fields": {
+      "name": "Studio Theatre",
+      "rows": 12,
+      "seats_in_row": 20
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 3,
+    "fields": {
+      "name": "Underground Hall",
+      "rows": 7,
+      "seats_in_row": 15
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 1,
+    "fields": {
+      "title": "The Great Heist",
+      "description": "A thrilling crime drama about a legendary robbery.",
+      "genres": [5, 3],
+      "actors": [1, 5]
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 2,
+    "fields": {
+      "title": "Enchanted Realms",
+      "description": "A magical journey through a mystical world.",
+      "genres": [2, 4],
+      "actors": [2, 6]
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 1,
+    "fields": {
+      "play": 1,
+      "theatre_hall": 1,
+      "show_time": "2025-05-15T19:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 2,
+    "fields": {
+      "play": 2,
+      "theatre_hall": 2,
+      "show_time": "2025-05-20T18:30:00Z"
+    }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 7,
+    "fields": { "name": "Thriller" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 8,
+    "fields": { "name": "Tragicomedy" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 9,
+    "fields": { "name": "Satire" }
+  },
+  {
+    "model": "theatre.genre",
+    "pk": 10,
+    "fields": { "name": "Farce" }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 7,
+    "fields": {
+      "first_name": "Leonardo",
+      "last_name": "DiCaprio"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 8,
+    "fields": {
+      "first_name": "Natalie",
+      "last_name": "Portman"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 9,
+    "fields": {
+      "first_name": "Tom",
+      "last_name": "Hanks"
+    }
+  },
+  {
+    "model": "theatre.actor",
+    "pk": 10,
+    "fields": {
+      "first_name": "Meryl",
+      "last_name": "Streep"
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 7,
+    "fields": {
+      "name": "Black Box Theatre",
+      "rows": 12,
+      "seats_in_row": 18
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 8,
+    "fields": {
+      "name": "Royal Grand Hall",
+      "rows": 25,
+      "seats_in_row": 35
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 7,
+    "fields": {
+      "title": "Shutter Island",
+      "description": "A psychological thriller set on a mysterious island.",
+      "genres": [7, 9],
+      "actors": [7, 8]
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 8,
+    "fields": {
+      "title": "Forrest Gump",
+      "description": "The life journey of an extraordinary man.",
+      "genres": [2, 10],
+      "actors": [9]
+    }
+  },
+  {
+    "model": "theatre.play",
+    "pk": 9,
+    "fields": {
+      "title": "The Devil Wears Prada",
+      "description": "A comedy-drama set in the fashion industry.",
+      "genres": [1, 2],
+      "actors": [10]
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 7,
+    "fields": {
+      "play": 7,
+      "theatre_hall": 7,
+      "show_time": "2025-01-05T20:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 8,
+    "fields": {
+      "play": 8,
+      "theatre_hall": 8,
+      "show_time": "2025-01-06T18:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 9,
+    "fields": {
+      "play": 9,
+      "theatre_hall": 7,
+      "show_time": "2025-01-07T19:30:00Z"
+    }
+  }
+]
