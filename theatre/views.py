@@ -37,7 +37,6 @@ from theatre.models import (
     Actor,
     Play,
 )
-from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly
 
 
 class PlayAndReservationPaginator(PageNumberPagination):
@@ -65,8 +64,6 @@ class BaseCreateListViewSet(
     """Base viewset for endpoints that allow creation and listing
     with read-only access for non-admins."""
 
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
-
 
 class BaseRetrieveCreateListViewSet(
     mixins.CreateModelMixin,
@@ -76,8 +73,6 @@ class BaseRetrieveCreateListViewSet(
 ):
     """Base viewset for endpoints that allow creation, listing, and retrieving
     with read-only access for non-admins."""
-
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
 
 class GenreViewSet(BaseCreateListViewSet):
@@ -177,7 +172,6 @@ class PlayViewSet(BaseRetrieveCreateListViewSet):
 class PerformanceViewSet(viewsets.ModelViewSet):
     """Viewset for managing performances with filtering capabilities."""
 
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
     queryset = Performance.objects.select_related("play", "theatre_hall").annotate(
         tickets_available=(
             F("theatre_hall__rows") * F("theatre_hall__seats_in_row") - Count("tickets")
