@@ -116,7 +116,9 @@ class ReservationSerializer(serializers.ModelSerializer):
                 if "performance" in ticket:
                     ticket["performance_id"] = ticket.pop("performance")
                 elif "performance_id" not in ticket:
-                    ticket["performance_id"] = self.get_default_performance_id()
+                    raise serializers.ValidationError(
+                        "Ticket must have an associated performance."
+                    )
 
                 ticket_combination = (
                     ticket["performance_id"],
@@ -142,18 +144,12 @@ class ReservationSerializer(serializers.ModelSerializer):
 
         return reservation
 
-    def get_default_performance_id(self) -> int:
-        return 1
-
 
 class ReservationListSerializer(ReservationSerializer):
-    tickets = serializers.SerializerMethodField()
+    tickets = TicketSeatsSerializer(many=True, read_only=True)
 
     class Meta(ReservationSerializer.Meta):
         fields = ReservationSerializer.Meta.fields
-
-    def get_tickets(self, obj: Reservation) -> list[dict]:
-        return TicketSeatsSerializer(obj.tickets.all(), many=True).data
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -179,15 +175,15 @@ class PlaySerializer(serializers.ModelSerializer):
         fields = ("id", "title", "description", "genres", "actors")
 
 
-class PlayListSerializer(serializers.ModelSerializer):
+class PlayListSerializer(PlaySerializer):
     genres = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     actors = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="full_name"
     )
+    image = serializers.ImageField()
 
-    class Meta:
-        model = Play
-        fields = ("id", "title", "description", "genres", "actors", "image")
+    class Meta(PlaySerializer.Meta):
+        fields = PlaySerializer.Meta.fields + ("image",)
 
 
 class PlayDetailSerializer(serializers.ModelSerializer):
